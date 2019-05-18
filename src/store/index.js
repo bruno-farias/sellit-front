@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 
 import shared from './shared'
 import users from './users'
-import groups from './groups'
+import orders from './orders'
 
 Vue.use(Vuex)
 
@@ -11,6 +11,6 @@ export default new Vuex.Store({
   modules: {
     shared,
     users,
-    groups
+    orders
   }
 })

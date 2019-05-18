@@ -57,7 +57,7 @@ const actions = {
 
         localStorage.setItem('token', response.data.access_token)
         localStorage.setItem('expirationDate', expirationDate)
-        router.push('/group/list')
+        router.push('/orders')
       })
       .catch(error => {
         dispatch('setLoadingStatus', false)

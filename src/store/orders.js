@@ -1,35 +1,42 @@
 import axios from 'axios'
-import router from '../router';
 
 const state = {
-  groups: [],
-  selectedGroup: {}
+  orders: [],
+  selectedOrder: {}
 }
 
 const mutations = {
-  'SET_GROUP_LIST' (state, groups) {
-    const list = groups.map(item => {
+  'SET_ORDER_LIST' (state, orders) {
+    const list = orders.map(item => {
+      const amount = item.order_products.reduce((acc, cur) => {
+        return acc + parseFloat(cur.price)
+      }, 0)
       return {
         id: item.id,
-        name: item.name,
-        description: item.description
+        customer: item.customer.name,
+        customer_email: item.customer.email,
+        items: item.order_products.length,
+        amount: parseFloat(amount).toFixed(2),
+        sales_person: item.user.name
       }
     })
 
-    state.groups = list
+    state.orders = list
   },
-  'SET_SELECTED_GROUP' (state, selectedGroup) {
-    state.selectedGroup = selectedGroup
+  'SET_SELECTED_ORDER' (state, selectedOrder) {
+    state.selectedOrder = selectedOrder
   }
 }
 
 const actions = {
-  fetchGroupList: ({ commit, dispatch }) => {
+  fetchOrderList: ({ commit, dispatch }) => {
     dispatch('setLoadingStatus', true)
     dispatch('setLoadingMessage', 'Please wait...')
-    axios.get('groups')
+
+    axios.get('orders')
       .then(response => {
-        commit('SET_GROUP_LIST', response.data)
+        console.log({ response })
+        commit('SET_ORDER_LIST', response.data)
       })
       .catch(error => {
         console.log({ error })
@@ -39,14 +46,14 @@ const actions = {
         dispatch('setLoadingStatus', false)
       })
   },
-  createGroup: ({ commit, dispatch }, { groupData }) => {
+  createOrder: ({ commit, dispatch }, { orderData }) => {
     dispatch('setLoadingStatus', true)
     dispatch('setLoadingMessage', 'Please wait...')
     const options = {
       method: 'POST',
       headers: { 'content-type': 'application/x-www-form-urlencoded' },
-      data: groupData,
-      url: 'groups'
+      data: orderData,
+      url: 'orders'
     }
     axios(options)
       .then(response => {
@@ -63,8 +70,8 @@ const actions = {
 }
 
 const getters = {
-  groups (state) {
-    return state.groups
+  orders (state) {
+    return state.orders
   }
 }
 
