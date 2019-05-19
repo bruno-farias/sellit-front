@@ -30,41 +30,27 @@ const mutations = {
 
 const actions = {
   fetchOrderList: ({ commit, dispatch }) => {
-    dispatch('setLoadingStatus', true)
-    dispatch('setLoadingMessage', 'Please wait...')
-
     axios.get('orders')
       .then(response => {
-        console.log({ response })
         commit('SET_ORDER_LIST', response.data)
       })
       .catch(error => {
         console.log({ error })
         dispatch('openSnackbar', { message: error.response.statusText })
       })
-      .finally(_ => {
-        dispatch('setLoadingStatus', false)
-      })
   },
   createOrder: ({ commit, dispatch }, { orderData }) => {
-    dispatch('setLoadingStatus', true)
-    dispatch('setLoadingMessage', 'Please wait...')
     const options = {
       method: 'POST',
-      headers: { 'content-type': 'application/x-www-form-urlencoded' },
       data: orderData,
       url: 'orders'
     }
     axios(options)
       .then(response => {
         console.log({ response })
-        window.location.reload()
       })
       .catch(error => {
         console.log({ error })
-      })
-      .finally(_ => {
-        dispatch('setLoadingStatus', false)
       })
   }
 }

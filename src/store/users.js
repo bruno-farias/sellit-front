@@ -4,7 +4,9 @@ import router from '../router'
 const state = {
   userToken: null,
   userData: null,
-  loginError: null
+  loginError: null,
+  salesPersons: [],
+  users: []
 }
 
 const mutations = {
@@ -20,6 +22,12 @@ const mutations = {
       email: user.email
     }
   },
+  'SET_SALES_PERSONS' (state, users) {
+    state.salesPersons = users
+  },
+  'SET_ALL_USERS' (state, users) {
+    state.users = users
+  },
   'DESTROY_USER_TOKEN' (state) {
     state.userToken = null
     state.userData = null
@@ -29,27 +37,19 @@ const mutations = {
 
 const actions = {
   register: ({ commit, dispatch }, { userData }) => {
-    dispatch('setLoadingStatus', true)
-    dispatch('setLoadingMessage', 'Please wait...')
-
     axios.post('auth/register', userData)
       .then(_ => {
-        dispatch('setLoadingStatus', false)
         router.push('/login')
       })
       .catch(error => {
-        dispatch('setLoadingStatus', false)
         dispatch('openSnackbar', { message: error.response.statusText })
       })
   },
   login: ({ commit, dispatch }, { email, password }) => {
-    dispatch('setLoadingStatus', true)
-    dispatch('setLoadingMessage', 'Please wait...')
     axios.post('auth/login', { email, password })
       .then(response => {
         commit('SET_USER_TOKEN', response.data.access_token)
         dispatch('fetchLoggedUserData')
-        dispatch('setLoadingStatus', false)
 
         const now = new Date()
         const expirationDate = new Date(now.getTime() + 3600 * 1000)
@@ -60,11 +60,10 @@ const actions = {
         router.push('/orders')
       })
       .catch(error => {
-        dispatch('setLoadingStatus', false)
         dispatch('openSnackbar', { message: error.response.statusText })
       })
   },
-  fetchLoggedUserData: ({ commit }, id) => {
+  fetchLoggedUserData: ({ commit, dispatch }) => {
     axios.post('auth/me')
       .then(response => {
         const user = {
@@ -74,6 +73,21 @@ const actions = {
         }
         localStorage.setItem('userData', JSON.stringify(user))
         commit('SET_USER_DATA', user)
+      })
+      .catch(error => {
+        dispatch('openSnackbar', { message: error.response.statusText })
+      })
+  },
+  fetchSalesUsers: ({ commit }) => {
+    axios.get('users/role?role=sales_person')
+      .then(response => {
+        commit('SET_SALES_PERSONS', response.data)
+      })
+  },
+  fetchAllUsers: ({ commit }) => {
+    axios.get('users')
+      .then(response => {
+        commit('SET_ALL_USERS', response.data)
       })
   },
   tryAutoLogin: ({ commit }) => {
@@ -114,6 +128,12 @@ const getters = {
   },
   userToken (state) {
     return state.userToken
+  },
+  salesPersons (state) {
+    return state.salesPersons
+  },
+  users (state) {
+    return state.users
   }
 }
 

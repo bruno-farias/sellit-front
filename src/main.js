@@ -12,7 +12,25 @@ Vue.use(VueAxios, axios)
 Vue.config.productionTip = false
 
 axios.defaults.baseURL = process.env.VUE_APP_BASE_URL
-axios.defaults.headers.post['content-type'] = 'application/x-www-form-urlencoded'
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+axios.interceptors.request.use(function (config) {
+  store.dispatch('setLoadingStatus', true)
+  store.dispatch('setLoadingMessage', 'Please wait...')
+  return config
+}, function (error) {
+  store.dispatch('setLoadingStatus', false)
+  store.dispatch('openSnackbar', { message: error.response.statusText })
+  return Promise.reject(error)
+})
+
+axios.interceptors.response.use(function (response) {
+  store.dispatch('setLoadingStatus', false)
+  return response
+}, function (error) {
+  store.dispatch('setLoadingStatus', false)
+  store.dispatch('openSnackbar', { message: error.response.statusText })
+  return Promise.reject(error)
+})
 
 new Vue({
   router,

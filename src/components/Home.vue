@@ -14,5 +14,10 @@
 
 <script>
 export default {
+  methods: {
+    goToLogin() {
+      window.location.href = '/register'
+    }
+  }
 }
 </script>
