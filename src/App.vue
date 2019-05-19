@@ -19,7 +19,6 @@
     <snack-bar/>
   </v-app>
 </template>
-
 <script>
 import Loader from './components/Loader'
 import SnackBar from './components/SnackBar'
@@ -32,6 +31,15 @@ export default {
     SnackBar,
     UserMenu,
     Sidebar
+  },
+  mounted() {
+    window._mfq = window._mfq || [];
+    (function() {
+        var mf = document.createElement("script");
+        mf.type = "text/javascript"; mf.async = true;
+        mf.src = "//cdn.mouseflow.com/projects/c393e2cf-393b-48da-ad4e-0ef91f048805.js";
+        document.getElementsByTagName("head")[0].appendChild(mf);
+    })();
   },
   computed: {
     darkMode () {
