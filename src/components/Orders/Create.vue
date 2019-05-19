@@ -93,7 +93,15 @@
     methods: {
       submit () {
         if (this.$refs.form.validate()) {
-          this.$store.dispatch('createOrder', { user_id: this.editedItem.user_id, customer_id: this.editedItem.customer_id })
+          const orderData = {
+            user_id: this.editedItem.user_id,
+            customer_id: this.editedItem.customer_id,
+            notes: this.editedItem.notes
+          }
+          const orderProductsData = this.orderProducts
+          console.log({ orderProductsData })
+
+          this.$store.dispatch('createOrder', { orderData, orderProductsData })
           this.$refs.form.reset()
         }
       }

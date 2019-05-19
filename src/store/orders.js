@@ -39,7 +39,7 @@ const actions = {
         dispatch('openSnackbar', { message: error.response.statusText })
       })
   },
-  createOrder: ({ commit, dispatch }, { orderData }) => {
+  createOrder: ({ commit, dispatch }, { orderData, orderProductsData }) => {
     const options = {
       method: 'POST',
       data: orderData,
@@ -47,11 +47,30 @@ const actions = {
     }
     axios(options)
       .then(response => {
-        console.log({ response })
+        orderProductsData.map(item => {
+          console.log({ item })
+          const payload = { ...item, order_id: orderData.order_id }
+          console.log({ payload })
+          const options = {
+            method: 'POST',
+            data: payload,
+            url: 'order-products'
+          }
+          axios(options)
+            .then(response => {
+              console.log({ response })
+            })
+            .catch(error => {
+              console.log({ error })
+            })
+        })
       })
       .catch(error => {
         console.log({ error })
       })
+  },
+  createOrderProduct: ({ order, orderProductsData }) => {
+    
   }
 }
 

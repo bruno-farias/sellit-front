@@ -3,7 +3,7 @@
     <v-container fluid fill-height>
       <v-layout align-center justify-center>
         <v-flex xs12 sm8 md4>
-          <v-btn color="primary">
+          <v-btn color="primary" @click="goToLogin">
              Go to login
           </v-btn>
         </v-flex>

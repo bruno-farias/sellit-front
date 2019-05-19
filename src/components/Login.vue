@@ -15,6 +15,7 @@
                   name="email"
                   label="Email"
                   v-model="email"
+                  type="email"
                 ></v-text-field>
 
                 <v-text-field
